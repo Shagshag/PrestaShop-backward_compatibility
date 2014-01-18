@@ -24,25 +24,28 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-/**
- * Class allow to display tpl on the FO
- */
-class BWDisplay extends FrontController
+if (in_array('FrontController', get_declared_classes()))
 {
-	// Assign template, on 1.4 create it else assign for 1.5
-	public function setTemplate($template)
+	/**
+	 * Class allow to display tpl on the FO
+	 */
+	class BWDisplay extends FrontController
 	{
-		if (_PS_VERSION_ >= '1.5')
-			parent::setTemplate($template);
-		else
-			$this->template = $template;
-	}
+		/* Assign template, on 1.4 create it else assign for 1.5 */
+		public function setTemplate($template)
+		{
+			if (version_compare(_PS_VERSION_, '1.5.0.0', '>='))
+				parent::setTemplate($template);
+			else
+				$this->template = $template;
+		}
 
-	// Overload displayContent for 1.4
-	public function displayContent()
-	{
-		parent::displayContent();
+		/* Overload displayContent for 1.4 */
+		public function displayContent()
+		{
+			parent::displayContent();
 
-		echo Context::getContext()->smarty->fetch($this->template);
+			echo Context::getContext()->smarty->fetch($this->template);
+		}
 	}
 }

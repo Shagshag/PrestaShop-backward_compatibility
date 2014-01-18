@@ -25,17 +25,17 @@
 */
 
 if ((bool)Configuration::get('PS_MOBILE_DEVICE'))
-	require_once(_PS_MODULE_DIR_ . '/mobile_theme/Mobile_Detect.php');
+	require_once(_PS_MODULE_DIR_.'/mobile_theme/Mobile_Detect.php');
 
-// Retro 1.3, 'class_exists' cause problem with autoload...
+/* Retro 1.3, 'class_exists' cause problem with autoload... */
 if (version_compare(_PS_VERSION_, '1.4', '<'))
 {
-	// Not exist for 1.3
+	/* Not exist for 1.3 */
 	class Shop extends ObjectModel
 	{
 		public $id = 1;
 		public $id_shop_group = 1;
-		
+
 		public function __construct()
 		{
 		}
@@ -66,7 +66,7 @@ if (version_compare(_PS_VERSION_, '1.4', '<'))
 
 }
 
-// Not exist for 1.3 and 1.4
+/* Not exist for 1.3 and 1.4 */
 class Context
 {
 	/**
@@ -158,11 +158,11 @@ class Context
 		$this->controller = new ControllerBackwardModule();
 		if (is_object($cookie))
 		{
-			$this->currency = new Currency((int)$cookie->id_currency);
-			$this->language = new Language((int)$cookie->id_lang);
-			$this->country = new Country((int)$cookie->id_country);
-			$this->customer = new CustomerBackwardModule((int)$cookie->id_customer);
-			$this->employee = new Employee((int)$cookie->id_employee);
+			$this->currency = isset($cookie->id_currency)?new Currency((int)$cookie->id_currency):null;
+			$this->language = isset($cookie->id_lang)?new Language((int)$cookie->id_lang):null;
+			$this->country = isset($cookie->id_country)?new Country((int)$cookie->id_country):null;
+			$this->customer = isset($cookie->id_customer)?new CustomerBackwardModule((int)$cookie->id_customer):null;
+			$this->employee = isset($cookie->id_employee)?new Employee((int)$cookie->id_employee):null;
 		}
 		else
 		{
@@ -256,19 +256,19 @@ class ShopBackwardModule extends Shop
 
 	public $id = 1;
 	public $id_shop_group = 1;
-	
-	
+
+
 	public function getContextType()
 	{
 		return ShopBackwardModule::CONTEXT_ALL;
 	}
 
-	// Simulate shop for 1.3 / 1.4
+	/* Simulate shop for 1.3 / 1.4 */
 	public function getID()
 	{
 		return 1;
 	}
-	
+
 	/**
 	 * Get shop theme name
 	 *
@@ -312,9 +312,9 @@ class ControllerBackwardModule
 
 	public function addJquery()
 	{
-		if (_PS_VERSION_ < '1.5')
+		if (version_compare(_PS_VERSION_, '1.5.0.0', '<'))
 			$this->addJS(_PS_JS_DIR_.'jquery/jquery-1.4.4.min.js');
-		elseif (_PS_VERSION_ >= '1.5')
+		else
 			$this->addJS(_PS_JS_DIR_.'jquery/jquery-1.7.2.min.js');
 	}
 
@@ -326,7 +326,7 @@ class ControllerBackwardModule
  */
 class CustomerBackwardModule extends Customer
 {
-	public $logged = false; 
+	public $logged = false;
 	/**
 	 * Check customer informations and return customer validity
 	 *
@@ -345,3 +345,11 @@ class CustomerBackwardModule extends Customer
 		return false;
 	}
 }
+
+class AdminController
+{
+	public static $currentIndex;
+}
+global $currentIndex;
+if (isset($currentIndex))
+	AdminController::$currentIndex = $currentIndex;
